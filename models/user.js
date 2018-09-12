@@ -1,7 +1,5 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var thingSchema = require('./thing');
-var petSchema = require('./pet');
 
 var userSchema = new Schema({
     name: {
@@ -12,9 +10,7 @@ var userSchema = new Schema({
     password: {
         type: String,
         required:  true
-    },
-    pet: [petSchema.schema],
-    thing: [thingSchema.schema]
+    }
 },
 {
     timestamps: true

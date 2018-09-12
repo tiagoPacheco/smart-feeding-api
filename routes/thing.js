@@ -3,23 +3,23 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var router = express.Router();
 
-var User = require('../models/user');
+var Thing = require('../models/thing');
 
-router.use(bodyParser.json());
+ router.use(bodyParser.json());
 
 router.route('/')
 .get(function(req, res, next) {
-  User.find({}, function(err, user){
+  Thing.find({}, function(err, thing){
     if(err) throw err;  
-    res.json(user);
+    res.json(thing);
   }); 
 })
 
 .post(function (req, res, next){
-  User.create(req.body, function(err, user){
+  Thing.create(req.body, function(err, thing){
     if(err) throw err;
-    console.log('User Created!');
-    var id = user._id;
+    console.log('Thing Created!');
+    var id = thing._id;
 
     res.writeHead(200, {
         'Content-Type': 'text/plain'
@@ -30,17 +30,19 @@ router.route('/')
 
 router.route('/:userId/')
 .get(function(req, res, next) {
-  User.findById(req.params.userId, function(err, user){
+  Thing.find({ userId: req.params.userId}, function(err, thing){
     if(err) throw err;  
-    res.json(user);
-  }); 
-})
-
-.put(function(req, res, next) {
-  User.findByIdAndUpdate(req.params.userId, { $set: req.body }, { new: true }, function(err, user){
-    if(err) throw err;  
-    res.json(user);
+    res.json(thing);
   }); 
 });
+
+router.route('/thing/:thingId/')
+.put(function(req, res, next) {
+  Thing.findByIdAndUpdate(req.params.thingId, { $set: req.body }, { new: true }, function(err, thing){
+    if(err) throw err;  
+    res.json(thing);
+  }); 
+});
+;
 
 module.exports = router;

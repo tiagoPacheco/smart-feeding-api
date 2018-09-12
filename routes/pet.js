@@ -3,23 +3,23 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var router = express.Router();
 
-var User = require('../models/user');
+var Pet = require('../models/pet');
 
-router.use(bodyParser.json());
+ router.use(bodyParser.json());
 
 router.route('/')
 .get(function(req, res, next) {
-  User.find({}, function(err, user){
-    if(err) throw err;  
-    res.json(user);
+  Pet.find({}, function(err, pet){
+    if(err) throw err;
+    res.json(pet);
   }); 
 })
 
 .post(function (req, res, next){
-  User.create(req.body, function(err, user){
+  Pet.create(req.body, function(err, pet){
     if(err) throw err;
-    console.log('User Created!');
-    var id = user._id;
+    console.log('Pet Created!');
+    var id = pet._id;
 
     res.writeHead(200, {
         'Content-Type': 'text/plain'
@@ -30,17 +30,19 @@ router.route('/')
 
 router.route('/:userId/')
 .get(function(req, res, next) {
-  User.findById(req.params.userId, function(err, user){
+  Pet.find({ userId: req.params.userId}, function(err, pet){
     if(err) throw err;  
-    res.json(user);
-  }); 
-})
-
-.put(function(req, res, next) {
-  User.findByIdAndUpdate(req.params.userId, { $set: req.body }, { new: true }, function(err, user){
-    if(err) throw err;  
-    res.json(user);
+    res.json(pet);
   }); 
 });
+
+router.route('/pet/:petId/')
+.put(function(req, res, next) {
+  Pet.findByIdAndUpdate(req.params.petId, { $set: req.body }, { new: true }, function(err, pet){
+    if(err) throw err;  
+    res.json(pet);
+  }); 
+});
+;
 
 module.exports = router;

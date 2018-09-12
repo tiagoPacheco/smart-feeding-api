@@ -1,19 +1,19 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var thingSchema = new Schema({
-    userId: {
+var deviceDataSchema = new Schema({
+    thingId: {
         type: Schema.Types.ObjectId,
-        ref: 'user',
+        ref: 'thing',
         required:  true
     },
-    amountFood: {
+    petHasAteCount: {
         type: Number,
-        required: true
+        required:  true
     }
 },
 {
     timestamps: true
 });
 
-module.exports = mongoose.model('thing', thingSchema);
+module.exports = mongoose.model('device-data', deviceDataSchema);

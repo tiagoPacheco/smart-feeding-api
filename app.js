@@ -7,6 +7,10 @@ var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var thingRouter = require('./routes/thing');
+var petRouter = require('./routes/pet');
+var deviceDataRouter = require('./routes/device-data');
+var stockDataRouter = require('./routes/stock');
 
 var url = 'mongodb://localhost:27017/db_smart-feeding';
 mongoose.connect(url);
@@ -30,6 +34,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/index', indexRouter);
 app.use('/users', usersRouter);
+app.use('/thing', thingRouter);
+app.use('/pet', petRouter);
+app.use('/device-data', deviceDataRouter);
+app.use('/stock', stockDataRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

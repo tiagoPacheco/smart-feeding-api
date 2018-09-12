@@ -2,6 +2,11 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var petSchema = new Schema({
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'user',
+        required:  true
+    },
     name: {
         type: String,
         required:  true
@@ -15,6 +20,10 @@ var petSchema = new Schema({
         required:  true
     },
     birthDate: {
+        type: String,
+        required:  true
+    },
+    gender: {
         type: String,
         required:  true
     },
