@@ -36,7 +36,7 @@ router.route('/:userId/')
   }); 
 });
 
-router.route('/thing/:thingId/')
+router.route('/update/:thingId/')
 .put(function(req, res, next) {
   Thing.findByIdAndUpdate(req.params.thingId, { $set: req.body }, { new: true }, function(err, thing){
     if(err) throw err;  

@@ -36,7 +36,7 @@ router.route('/:userId/')
   }); 
 });
 
-router.route('/pet/:petId/')
+router.route('/update/:petId/')
 .put(function(req, res, next) {
   Pet.findByIdAndUpdate(req.params.petId, { $set: req.body }, { new: true }, function(err, pet){
     if(err) throw err;  

@@ -48,7 +48,10 @@ router.route('/addcountdogeat/:deviceDataId/')
       console.log('Updated Device!');
       res.json(deviceData);
     });
-  }); 
+  });
+
+  //TODO: Do a requisition to the thing, to know how many of food are still there.
+  var remainingFoodOnCanister = 300;
 });
 
 module.exports = router;

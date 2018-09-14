@@ -11,7 +11,6 @@ var usersRouter = require('./routes/users');
 var thingRouter = require('./routes/thing');
 var petRouter = require('./routes/pet');
 var deviceDataRouter = require('./routes/device-data');
-var stockDataRouter = require('./routes/stock');
 
 var url = 'mongodb://localhost:27017/db_smart-feeding';
 mongoose.connect(url);
@@ -35,6 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
   next();
 });
 
@@ -43,7 +43,6 @@ app.use('/users', usersRouter);
 app.use('/thing', thingRouter);
 app.use('/pet', petRouter);
 app.use('/device-data', deviceDataRouter);
-app.use('/stock', stockDataRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
