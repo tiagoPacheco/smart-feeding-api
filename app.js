@@ -60,4 +60,63 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+// routine
+
+var KNoTCloud = require('knot-cloud');
+let cloud = new KNoTCloud(
+  '192.168.0.102',
+  3000,
+  'c9e57ca2-1a7d-4321-9d33-83156dc80000',
+  '82b3253a5bc61df911ed081885c2f4d82fd84662',
+);
+var deviceID = require("./utils/knot-cloud")
+var DeviceData = require('./models/device-data');
+
+async function petRoutine() {
+  try {
+    await cloud.connect()
+    await cloud.subscribe(deviceID.toLowerCase())
+
+    var lastDogAteUpdate = false
+
+    cloud.on((data) => {
+      let result = data.data
+
+      if (result.sensor_id == 3) {
+        if (result.value == false && lastDogAteUpdate == true) {
+          console.log("testing the foca")
+          DeviceData.find({}, function(err, deviceData) {
+            if(err) throw err;
+  
+            if (deviceData.length == 0) {
+              DeviceData.create({petHasAteCount : 0})
+              console.log("created for the first time")
+            } else {
+              let foundEntry = deviceData[0]
+              var currentCount = parseInt(foundEntry.petHasAteCount);
+        
+              foundEntry.petHasAteCount = currentCount + 1;
+              console.log(`found entry count: ${foundEntry.petHasAteCount}`)
+              foundEntry.save(function(err, foundEntry){
+                if(err) throw err;  
+                console.log('Updated Device!');
+              });  
+            }
+          });  
+        }
+
+        lastDogAteUpdate = result.value
+      }
+
+      if (result.sensor_id == 5) {
+        
+      }
+    })
+  } catch (err) {
+    console.error(`Error: ${err}`);
+  }
+}
+
+petRoutine()
+
 module.exports = app;

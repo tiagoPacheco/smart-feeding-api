@@ -23,7 +23,7 @@ router.route('/')
   });
 })
 
-.post(function (req, res, next){
+.post(function (req, res, next) {
   Thing.create(req.body, function(err, thing){
     if(err) throw err;
     console.log('Thing Created!');

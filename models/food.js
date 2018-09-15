@@ -1,13 +1,13 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var deviceDataSchema = new Schema({
+var foodDataSchema = new Schema({
     // userId: {
     //     type: Schema.Types.ObjectId,
     //     ref: 'thing',
     //     required:  true
     // },
-    petHasAteCount: {
+    amountOfFood: {
         type: Number,
         required:  true
     }
@@ -16,4 +16,4 @@ var deviceDataSchema = new Schema({
     timestamps: true
 });
 
-module.exports = mongoose.model('device-data', deviceDataSchema);
+module.exports = mongoose.model('food', foodDataSchema);

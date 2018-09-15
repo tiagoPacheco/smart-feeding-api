@@ -9,49 +9,30 @@ var DeviceData = require('../models/device-data');
 
 router.route('/')
 .get(function(req, res, next) {
-  DeviceData.find({}, function(err, deviceData){
+  DeviceData.find({}, function(err, deviceData) {
     if(err) throw err;
-    res.json(deviceData);
-  }); 
+    if (deviceData.length == 0) {
+      res.json({result: 0})
+      return
+    }
+
+    console.log(deviceData[0].petHasAteCount)
+    res.json({result: deviceData[0].petHasAteCount})
+  });
 })
 
-.post(function (req, res, next){
-  DeviceData.create(req.body, function(err, deviceData){
-    if(err) throw err;
-    console.log('Device data Created!');
-    var id = deviceData._id;
+// router.route('/')
+// .get(function(req, res, next) {
+//   Food.find({}, function(err, food) {
+//     if(err) throw err;
+//     if (food.length == 0) {
+//       res.json({result: 20})
+//       return
+//     }
 
-    res.writeHead(200, {
-        'Content-Type': 'text/plain'
-    });
-    res.end(String(id));
-  });
-});
-
-router.route('/:thingId/')
-.get(function(req, res, next) {
-  DeviceData.find({ thingId: req.params.thingId}, function(err, deviceData){
-    if(err) throw err;  
-    res.json(deviceData);
-  }); 
-});
-
-router.route('/addcountdogeat/:deviceDataId/')
-.put(function(req, res, next) {
-  DeviceData.findById(req.params.deviceDataId, function(err, deviceData){
-    if(err) throw err;  
-    var currentCount = parseInt(deviceData.petHasAteCount);
-    deviceData.petHasAteCount = currentCount + 1;
-    
-    deviceData.save(function(err, deviceData){
-      if(err) throw err;  
-      console.log('Updated Device!');
-      res.json(deviceData);
-    });
-  });
-
-  //TODO: Do a requisition to the thing, to know how many of food are still there.
-  var remainingFoodOnCanister = 300;
-});
+//     console.log(food[0].amountOfFood)
+//     res.json({result: deviceData[0].petHasAteCount})
+//   });
+// })
 
 module.exports = router;

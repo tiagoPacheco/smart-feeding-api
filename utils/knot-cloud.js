@@ -1,3 +1,6 @@
+const deviceID = '603D50005DF83D08'
+module.exports = deviceID
+
 // const KNoTCloud = require('knot-cloud');
 
 // var exports = module.exports = {};
