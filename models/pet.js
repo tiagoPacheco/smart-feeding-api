@@ -12,20 +12,16 @@ var petSchema = new Schema({
         required:  true
     },
     weight: {
-        type: Number,
-        required:  true
+        type: Number
     },
     breed: {
-        type: String,
-        required:  true
+        type: String
     },
     birthDate: {
-        type: String,
-        required:  true
+        type: String
     },
     gender: {
-        type: String,
-        required:  true
+        type: String
     },
     amountFoodPetEat: {
         type: Number,
