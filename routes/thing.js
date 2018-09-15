@@ -29,10 +29,7 @@ router.route('/')
     console.log('Thing Created!');
     var id = thing._id;
 
-    res.writeHead(200, {
-        'Content-Type': 'text/plain'
-    });
-    res.end(String(id));
+    res.json({id: id});
   });
 });
 

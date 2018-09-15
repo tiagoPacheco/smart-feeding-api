@@ -19,12 +19,8 @@ router.route('/')
   Pet.create(req.body, function(err, pet){
     if(err) throw err;
     console.log('Pet Created!');
-    var id = pet._id;
-
-    res.writeHead(200, {
-        'Content-Type': 'text/plain'
-    });
-    res.end(String(id));
+    
+    res.json({id: pet._id});
   });
 });
 
