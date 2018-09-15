@@ -4,12 +4,12 @@ var bodyParser = require('body-parser');
 var router = express.Router();
 
 var KNoTCloud = require('knot-cloud');
-// let cloud = new KNoTCloud(
-//   'knot-test.cesar.org.br',
-//   3000,
-//   '81855be9-3c51-4746-98cd-0dffaacd0000',
-//   '6c9deba3f1fac2df20e3a6284469d2dbf502c5eb',
-// );
+let cloud = new KNoTCloud(
+  '192.168.0.102',
+  3000,
+  'c9e57ca2-1a7d-4321-9d33-83156dc80000',
+  '82b3253a5bc61df911ed081885c2f4d82fd84662',
+);
 
 var Thing = require('../models/thing');
 
@@ -35,28 +35,20 @@ router.route('/')
 
 router.route('/feed_pet')
 .post(function (req, res, next) {
-  res.json({name: "Testing"})
 
-  // try {
-  //   await cloud.connect();
-  //   const devices = cloud.;
-  //   console.log(devices);
-  // } catch (err) {
-  //   console.error(err);
-  // }
+  async function test() {
+    try {
+      await cloud.connect()
+      await cloud.setData("713B679E104024A6", [{sensorId: 1, value: 500}])
+    } catch (err) {
+      console.error(`Error: ${err}`);
+    }
+  
+    await cloud.close();
+  }
 
-  // await cloud.close();
-
-  // Thing.create(req.body, function(err, thing){
-  //   if(err) throw err;
-  //   console.log('Thing Created!');
-  //   var id = thing._id;
-  //
-  //   res.writeHead(200, {
-  //       'Content-Type': 'text/plain'
-  //   });
-  //   res.end(String(id));
-  // });
+  test()
+  res.json({})
 });
 
 router.route('/:userId/')
