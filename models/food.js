@@ -10,7 +10,11 @@ var foodDataSchema = new Schema({
     amountOfFood: {
         type: Number,
         required:  true
-    }
+    },
+    // numberOfEntries: {
+    //     type: Number,
+    //     required: true
+    // }
 },
 {
     timestamps: true

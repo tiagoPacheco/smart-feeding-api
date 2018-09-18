@@ -5,7 +5,7 @@ var router = express.Router();
 
 var DeviceData = require('../models/device-data');
 
- router.use(bodyParser.json());
+router.use(bodyParser.json());
 
 router.route('/')
 .get(function(req, res, next) {
@@ -20,19 +20,5 @@ router.route('/')
     res.json({result: deviceData[0].petHasAteCount})
   });
 })
-
-// router.route('/')
-// .get(function(req, res, next) {
-//   Food.find({}, function(err, food) {
-//     if(err) throw err;
-//     if (food.length == 0) {
-//       res.json({result: 20})
-//       return
-//     }
-
-//     console.log(food[0].amountOfFood)
-//     res.json({result: deviceData[0].petHasAteCount})
-//   });
-// })
 
 module.exports = router;

@@ -11,6 +11,7 @@ var usersRouter = require('./routes/users');
 var thingRouter = require('./routes/thing');
 var petRouter = require('./routes/pet');
 var deviceDataRouter = require('./routes/device-data');
+var foodRouter = require('./routes/food');
 
 var url = 'mongodb://localhost:27017/db_smart-feeding';
 mongoose.connect(url);
@@ -43,6 +44,7 @@ app.use('/users', usersRouter);
 app.use('/thing', thingRouter);
 app.use('/pet', petRouter);
 app.use('/device-data', deviceDataRouter);
+app.use('/food', foodRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -64,15 +66,54 @@ app.use(function(err, req, res, next) {
 
 var KNoTCloud = require('knot-cloud');
 let cloud = new KNoTCloud(
-  '192.168.0.102',
+  'knot-test.cesar.org.br',
   3000,
-  'c9e57ca2-1a7d-4321-9d33-83156dc80000',
-  '82b3253a5bc61df911ed081885c2f4d82fd84662',
+  '31a2e44e-b9cb-445a-a894-4bb0faad0000',
+  '86651ee2fb69801ae7c246c3c7b32a6f9e962b24',
 );
 var deviceID = require("./utils/knot-cloud")
-var DeviceData = require('./models/device-data');
+var DeviceData = require('./models/device-data')
+var Food = require('./models/food')
+let maxFood = 20
 
 async function petRoutine() {
+  function checkPetAte() {
+    DeviceData.find({}, function(err, deviceData) {
+      if(err) throw err;
+
+      if (deviceData.length == 0) {
+        DeviceData.create({petHasAteCount : 0})
+      } else {
+        let foundEntry = deviceData[0]
+        var currentCount = parseInt(foundEntry.petHasAteCount);
+  
+        foundEntry.petHasAteCount = currentCount + 1;
+        console.log(`found entry count: ${foundEntry.petHasAteCount}`)
+        foundEntry.save(function(err, foundEntry){
+          if(err) throw err;  
+        });  
+      }
+    });
+  }
+
+  function checkRemainingMeals(value) {
+    Food.find({}, function(error, result) {
+      if(error) throw error;
+
+      if (result.length == 0) {
+        // this is empty
+        Food.create({amountOfFood : maxFood})
+      } else {
+        let foundEntry = result[0]
+        foundEntry.amountOfFood = value
+        
+        foundEntry.save(function(err, foundEntry){
+          if(err) throw err;  
+        });
+      }
+    })
+  }
+
   try {
     await cloud.connect()
     await cloud.subscribe(deviceID.toLowerCase())
@@ -84,32 +125,14 @@ async function petRoutine() {
 
       if (result.sensor_id == 3) {
         if (result.value == false && lastDogAteUpdate == true) {
-          console.log("testing the foca")
-          DeviceData.find({}, function(err, deviceData) {
-            if(err) throw err;
-  
-            if (deviceData.length == 0) {
-              DeviceData.create({petHasAteCount : 0})
-              console.log("created for the first time")
-            } else {
-              let foundEntry = deviceData[0]
-              var currentCount = parseInt(foundEntry.petHasAteCount);
-        
-              foundEntry.petHasAteCount = currentCount + 1;
-              console.log(`found entry count: ${foundEntry.petHasAteCount}`)
-              foundEntry.save(function(err, foundEntry){
-                if(err) throw err;  
-                console.log('Updated Device!');
-              });  
-            }
-          });  
+          checkPetAte()
         }
 
         lastDogAteUpdate = result.value
       }
 
       if (result.sensor_id == 5) {
-        
+        checkRemainingMeals(result.value)
       }
     })
   } catch (err) {
