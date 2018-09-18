@@ -19,8 +19,8 @@ router.route('/')
     User.create(req.body, function (err, user) {
       if (err) throw err;
       console.log('User Created!');
-      
-      res.json({id: user._id });
+
+      res.json({ id: user._id });
     });
   });
 

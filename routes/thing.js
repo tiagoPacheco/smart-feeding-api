@@ -13,59 +13,59 @@ let cloud = new KNoTCloud(
 
 var Thing = require('../models/thing');
 
- router.use(bodyParser.json());
+router.use(bodyParser.json());
 
 router.route('/')
-.get(function(req, res, next) {
-  Thing.find({}, function(err, thing){
-    if(err) throw err;
-    res.json(thing);
-  });
-})
+  .get(function (req, res, next) {
+    Thing.find({}, function (err, thing) {
+      if (err) throw err;
+      res.json(thing);
+    });
+  })
 
-.post(function (req, res, next) {
-  Thing.create(req.body, function(err, thing){
-    if(err) throw err;
-    console.log('Thing Created!');
-    var id = thing._id;
+  .post(function (req, res, next) {
+    Thing.create(req.body, function (err, thing) {
+      if (err) throw err;
+      console.log('Thing Created!');
+      var id = thing._id;
 
-    res.json({id: id});
+      res.json({ id: id });
+    });
   });
-});
 
 router.route('/feed_pet')
-.post(function (req, res, next) {
+  .post(function (req, res, next) {
 
-  async function test() {
-    try {
-      await cloud.connect()
-      await cloud.setData("713B679E104024A6", [{sensorId: 1, value: 500}])
-    } catch (err) {
-      console.error(`Error: ${err}`);
+    async function test() {
+      try {
+        await cloud.connect()
+        await cloud.setData("713B679E104024A6", [{ sensorId: 1, value: 500 }])
+      } catch (err) {
+        console.error(`Error: ${err}`);
+      }
+
+      await cloud.close();
     }
-  
-    await cloud.close();
-  }
 
-  test()
-  res.json({})
-});
+    test()
+    res.json({})
+  });
 
 router.route('/:userId/')
-.get(function(req, res, next) {
-  Thing.find({ userId: req.params.userId}, function(err, thing){
-    if(err) throw err;
-    res.json(thing);
+  .get(function (req, res, next) {
+    Thing.find({ userId: req.params.userId }, function (err, thing) {
+      if (err) throw err;
+      res.json(thing);
+    });
   });
-});
 
 router.route('/update/:thingId/')
-.put(function(req, res, next) {
-  Thing.findByIdAndUpdate(req.params.thingId, { $set: req.body }, { new: true }, function(err, thing){
-    if(err) throw err;
-    res.json(thing);
+  .put(function (req, res, next) {
+    Thing.findByIdAndUpdate(req.params.thingId, { $set: req.body }, { new: true }, function (err, thing) {
+      if (err) throw err;
+      res.json(thing);
+    });
   });
-});
 ;
 
 module.exports = router;

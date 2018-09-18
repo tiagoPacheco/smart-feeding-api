@@ -13,11 +13,13 @@ var petRouter = require('./routes/pet');
 var deviceDataRouter = require('./routes/device-data');
 var foodRouter = require('./routes/food');
 
+var Users = require('./models/user');
+
 var url = 'mongodb://localhost:27017/db_smart-feeding';
 mongoose.connect(url);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Connection error:'));
-db.once('open', function(){
+db.once('open', function () {
   console.log('Connected correctly to server');
 });
 
@@ -32,27 +34,36 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
-  next();
-});
+
+var whitelist = [
+  'http://localhost:4200',
+];
+var corsOptions = {
+  origin: function(origin, callback){
+      var originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+      callback(null, originIsWhitelisted);
+  },
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 
 app.use('/index', indexRouter);
 app.use('/users', usersRouter);
+
+app.use(auth);
 app.use('/thing', thingRouter);
 app.use('/pet', petRouter);
 app.use('/device-data', deviceDataRouter);
 app.use('/food', foodRouter)
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -139,6 +150,31 @@ async function petRoutine() {
     console.error(`Error: ${err}`);
   }
 }
+
+function auth(req, res, next) {
+  var authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    var err = new Error('You are not authenticated!');
+    err.status = 401;
+    next(err);
+    return;
+  };
+
+  var auth = new Buffer(authHeader.split(' ')[1], 'base64').toString().split(':');
+  var user = auth[0];
+  var pass = auth[1];
+  console.log(user + ":" + pass);
+  Users.findOne({ name: user }, function (err, user) {
+    if (user == null || user.password != pass) {
+      var newerr = new Error('You are not authenticated!');
+      newerr.status = 401;
+      next(newerr);
+    }
+    next();
+  });
+};
+
 
 petRoutine()
 
